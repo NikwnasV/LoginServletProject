@@ -20,17 +20,14 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String uri = request.getRequestURI();
         if(uri.equals("/main-page")) {
-            if(request.getSession().getAttribute("user") == null) {
-                response.sendRedirect("/index");
+            HttpSession session = request.getSession(false);
+            if(session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("/index");
             }else{
-            String uname = request.getParameter("uname");
-            String psw = request.getParameter("psw");
-            request.setAttribute("welcomeMessage", "Hi " + uname + "! " + "Your password is : " + psw);
-            String method = request.getMethod();
-            List<UserModel> user = new ArrayList<>();
-            user.add(new UserModel("Nikolakis", "Varsakaj", "ice18390040@uniwa.gr", "User"));
-            request.setAttribute("users", user);
-            request.getRequestDispatcher("/WEB-INF/view/main-page.jsp").forward(request, response);}
+                UserModel user = (UserModel) session.getAttribute("user");
+                request.setAttribute("user", user);
+                request.getRequestDispatcher("/WEB-INF/view/main-page.jsp").forward(request, response);
+            }
         }else if(uri.equals("/register")){
             String method = request.getMethod();
             if(method.equals("GET")){
@@ -45,16 +42,27 @@ public class LoginServlet extends HttpServlet {
             }
 
         }else if(uri.equals("/admin-page")) {
-            List<UserModel> users = new ArrayList<>();
-            users.add(new UserModel("Nikolakis", "Varsakaj", "ice18390040@uniwa.gr", "Admin"));
-            users.add(new UserModel("Xaralampis", "Oikonomaj", "ice1839041@uniwa.gr", "User"));
-            users.add(new UserModel("Argi", "Psychopadaj", "ice138940107@uniwa.gr", "Professional Retard"));
-            users.add(new UserModel("Theodor","Vasalaj", "ice18390151@uniwa.gr", "Even Bigger Pro-Retard"));
+            HttpSession session = request.getSession(false); // Get the existing session, if any
+            if (session == null || session.getAttribute("admin") == null) {
+                // If no session or user is not admin, redirect to access denied
+                response.sendRedirect("/access-denied");
+                return;
+            }
+            UserServiceImpl userService = UserServiceImpl.getInstance();
+            List<UserModel> users = userService.getAllUsers();
+            // Set users list as a request attribute for displaying in JSP
             request.setAttribute("users", users);
-            String uname = request.getParameter("uname");
-            String psw = request.getParameter("psw");
-            request.setAttribute("welcomeMessage", "Hi " + uname + "! " + "Your password is : " + psw);
+//            List<UserModel> users = new ArrayList<>();
+//            users.add(new UserModel("Nikolakis", "Varsakaj", "ice18390040@uniwa.gr", "Admin"));
+//            users.add(new UserModel("Xaralampis", "Oikonomaj", "ice1839041@uniwa.gr", "User"));
+//            users.add(new UserModel("Argi", "Psychopadaj", "ice138940107@uniwa.gr", "User"));
+//            users.add(new UserModel("Theodor","Vasalaj", "ice18390151@uniwa.gr", "User"));
+//            request.setAttribute("users", users);
+//            String uname = request.getParameter("uname");
+//            String psw = request.getParameter("psw");
+//            request.setAttribute("welcomeMessage", "Hi " + uname + "! " + "Your password is : " + psw);
             request.getRequestDispatcher("/WEB-INF/view/admin-page.jsp").forward(request, response);
+            session.invalidate();
         }else{
             String method = request.getMethod();
             if(method.equals("GET")) {
@@ -64,9 +72,18 @@ public class LoginServlet extends HttpServlet {
                 String psw = request.getParameter("psw");
                 try {
                     UserModel user = UserServiceImpl.getInstance().auth(uname, psw);
+                    String username = user.getName();
+                    String email = user.getEmail();
+                    String role = user.getRole();
                     HttpSession session = request.getSession();
-                    session.setAttribute("user", user);
-                    response.sendRedirect("/main-page");
+                    session.setAttribute(role, user);
+                    session.setAttribute(uname, username);
+                    session.setAttribute(email, email);
+                    if(role.equals("admin")){
+                        response.sendRedirect("/admin-page");
+                    }else{
+                        response.sendRedirect("/main-page");
+                    }
                 } catch (AuthException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                     request.getRequestDispatcher("/WEB-INF/view/index.jsp").forward(request, response);

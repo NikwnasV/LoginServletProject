@@ -24,7 +24,7 @@
 
         form {
             font-family: 'Work Sans', sans-serif;
-            background: rgba(255, 255, 255, 0.1); /* Glass-like background */
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -63,25 +63,55 @@
             color: #ddd;
         }
 
-        input {
-            padding: 10px;
-            border: none;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
-        }
-
         input::placeholder {
             color: #e0e0e0;
             font-family: 'Work Sans', sans-serif;
             font-weight: 300;
         }
+        
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
 
-        input:focus {
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .input-wrapper i {
+            color: #ddd;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: #fff;
+            font-size: 14px;
             outline: none;
-            box-shadow: 0 0 8px rgba(103, 58, 183, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .input-wrapper input::placeholder {
+            color: #e0e0e0;
+            font-weight: 300;
+        }
+
+        .toggle-password {
+            font-size: 18px;
+            color: #ddd;
+            cursor: pointer;
+        }
+
+        .toggle-password:hover {
+            color: #fff;
         }
 
         button {
@@ -139,33 +169,41 @@
             <svg width="150px" height="150px" viewBox="0 -5 72 72" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><defs><style>.cls-1{fill:#d9d9d9;}</style></defs><title>user-graduate</title><path class="cls-1" d="M17.25,52h37.5A1.68,1.68,0,0,0,56,51.44a1.39,1.39,0,0,0,.34-1.1A20.65,20.65,0,0,0,45.51,34.73a13.42,13.42,0,0,1-19,0A20.65,20.65,0,0,0,15.63,50.34a1.39,1.39,0,0,0,.34,1.1A1.68,1.68,0,0,0,17.25,52Z"></path><path class="cls-1" d="M45.58,18.55l-.67.32-7.37,3.19a5.29,5.29,0,0,1-3.7,0l-7.3-3.17-.26-.12a11.66,11.66,0,0,0,.64,13.78c.2.25.41.48.63.71s.45.45.68.66a11.62,11.62,0,0,0,15.54,0c.23-.21.46-.43.68-.66s.43-.46.63-.71a11.66,11.66,0,0,0,.5-14Z"></path><path d="M50.8,22.39h2.48l-.89-2.89v-9c.6-.41.43-.91-.45-1.22l-14.13-5A6.41,6.41,0,0,0,34,4.3L19.51,9.77c-1.05.39-1.05,1,0,1.43l5.19,2v1A3.32,3.32,0,0,0,26.54,17l7.3,3.18a5.35,5.35,0,0,0,3.7,0L44.91,17a3.32,3.32,0,0,0,1.85-2.82V13l4.89-2.06v8.64Z"></path></g></svg>
         </div>
         <div class="container">
-            <label for="uname">Username</label>
-            <input type="text" placeholder="Enter Username" name="uname" id="uname" required>
-            
-            <label for="psw">Password</label>
-            <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+            <div class="input-container">
+                <label for="uname">Username</label>
+                <div class="input-wrapper">
+                    <i class="ri-user-line"></i>
+                    <input type="text" placeholder="Enter Username" name="uname" id="uname" required>
+                </div>
+            </div>
+
+            <div class="input-container">
+                <label for="psw">Password</label>
+                <div class="input-wrapper">
+                    <i class="ri-lock-line"></i>
+                    <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+                    <i class="ri-eye-line toggle-password" onclick="togglePasswordVisibility()"></i>
+                </div>
+            </div>
             
             <button type="submit">Login</button>
             <button type="button" class="register-btn" onclick="window.location.href='/register'">Not registered? Register here</button>
         </div>
     </form>
-                 
-            <script>
+    <script>
         function togglePasswordVisibility() {
-            var passwordInput = document.getElementById('psw');
-            var passwordIcon = document.querySelector('.password-toggle');
-            
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                passwordIcon.classList.remove('ri-eye-line');
-                passwordIcon.classList.add('ri-eye-off-line');
+            const passwordField = document.getElementById("psw");
+            const toggleIcon = document.querySelector(".toggle-password");
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleIcon.classList.remove("ri-eye-line");
+                toggleIcon.classList.add("ri-eye-off-line");
             } else {
-                passwordInput.type = "password";
-                passwordIcon.classList.remove('ri-eye-off-line');
-                passwordIcon.classList.add('ri-eye-line');
+                passwordField.type = "password";
+                toggleIcon.classList.remove("ri-eye-off-line");
+                toggleIcon.classList.add("ri-eye-line");
             }
         }
     </script>
-    
 </body>
 </html>

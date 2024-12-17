@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService{
     }
 
     public List<UserModel> getAllUsers() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return (List<UserModel>) UserDAO.getInstance().getAllUsers();
     }
     
 }
