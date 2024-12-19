@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Admin Register Page</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -156,10 +156,29 @@
             box-shadow: 0 5px 10px rgba(171, 71, 188, 0.5);
             background: linear-gradient(to right, #AB47BC, #CE93D8);
         }
+        
+        select {
+            font-family: 'Work Sans', sans-serif;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 0px solid rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            width: 5%;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        select option {
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
-    <form action="/register" method="post">
+    <form action="/admin-register" method="post">
         <c:if test="${not empty error}">
             <div style="color: red; margin-bottom: 15px;">
                 ${error}
@@ -191,6 +210,17 @@
                     <i class="ri-lock-line"></i>
                     <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
                     <i class="ri-eye-line toggle-password" onclick="togglePasswordVisibility()"></i>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <label for="role">Role</label>
+                <div class="input-wrapper">
+                    <i class="ri-briefcase-line"></i>
+                    <select name="role" id="role" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
                 </div>
             </div>
             

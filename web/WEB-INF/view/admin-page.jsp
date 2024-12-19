@@ -1,5 +1,5 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,37 +10,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <style>
+        <style>
         body {
             font-family: 'Work Sans', sans-serif;
             margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 20px;
+            color: #fff;
             background: linear-gradient(135deg, #360427, #3f1a8a, #3a0969);
             background-size: cover;
             background-position: center;
-            color: #fff;
         }
 
-        .admin-info {
-            font-family: 'Work Sans', sans-serif;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            width: 600px;
+        h1, h2 {
             text-align: center;
-        }
-
-        h1 {
-            font-size: 28px;
             margin-bottom: 20px;
-            color: #fff;
         }
 
         table {
@@ -66,50 +49,144 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
-        a.logout-btn {
-            display: inline-block;
-            margin-top: 20px;
+        /* Action Buttons Section */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-start; /* Align buttons side-by-side */
+            gap: 10px; /* Space between buttons */
+        }
+
+        button.action-button {
             background: linear-gradient(to right, #f05b2e, #AB47BC);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);
+            width: 85px;
+            text-align: center;
+        }
+
+        button.action-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 10px rgba(171, 71, 188, 0.5);
+            background: linear-gradient(to right, #AB47BC, #CE93D8);
+        }
+
+        /* Input Container Styles */
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        input::placeholder {
+            color: #e0e0e0;
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 300;
+        }
+        
+        .input-wrapper {
+            font-family: 'Work Sans', sans-serif;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .input-wrapper i {
+            color: #ddd;
+            font-size: 18px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #e0e0e0;
+            font-weight: 300;
+        }
+
+        button.add-user-btn {
+            background: linear-gradient(to right, #f05b2e, #AB47BC);
+            color: white;
+            border: none;
+            padding: 10px;
             border-radius: 40px;
-            text-decoration: none;
+            cursor: pointer;
             font-family: 'Work Sans', sans-serif;
             font-size: 18px;
             font-weight: 600;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 250px;
+            margin: 20px auto;
+            display: block;
         }
 
-        a.logout-btn:hover {
+        button.add-user-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 5px 10px rgba(171, 71, 188, 0.5);
             background: linear-gradient(to right, #AB47BC, #CE93D8);
         }
-    </style>
+            </style>
 </head>
 <body>
-    <div class="admin-info">
-        <h1>Welcome, Admin!</h1>
-        <p>Database information is displayed below:</p>
+    <h1>Welcome, Admin!</h1>
 
-        <table>
+    <!-- Users Table -->
+    <h2>User Management</h2>
+    <table id="Users">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+        <c:forEach items="${users}" var="user">
             <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${user.role}</td>
+                <td>
+                    <div class="action-buttons">
+                        <!-- Edit Button -->
+                        <form action="/admin-page" method="get" style="display:inline;">
+                            <input type="hidden" name="username" value="${user.name}">
+                            <button type="submit" class="action-button"> Edit</button>
+                        </form>
+                        <!-- Delete Button -->
+                        <form action="/admin-page" method="post" style="display:inline;">
+                            <input type="hidden" name="username" value="${user.name}">
+                            <button type="submit" class="action-button"> Delete</button>
+                        </form>
+                    </div>
+                </td>
             </tr>
-            <c:forEach items="${users}" var="user">
-                <tr>
-                    <td>${user.name}</td>
-                    <td>${user.email}</td>
-                    <td>${user.role}</td>
-                </tr>
-            </c:forEach>
-        </table>
+        </c:forEach>
+    </table>
+<!-- Add User Button -->
+<div class="container" style="text-align: left; margin-top: 20px;">
+    <form action="/admin-register" method="get">
+        <button type="submit" class="add-user-btn">Add User</button>
+    </form>
+</div>
 
-        <a href="/logout" class="logout-btn">Logout</a>
-    </div>
+    </form>
 </body>
 </html>

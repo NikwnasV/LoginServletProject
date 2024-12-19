@@ -43,4 +43,8 @@ public class UserServiceImpl implements UserService{
         return (List<UserModel>) UserDAO.getInstance().getAllUsers();
     }
     
+    @Override
+    public void deleteUser(String username){
+        UserDAO.getInstance().delete(username);
+    }
 }

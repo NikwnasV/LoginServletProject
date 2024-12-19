@@ -53,14 +53,14 @@ public class UserDAO {
             pr.setString(1, user.getName());
             pr.setString(2, hashedPassword);
             pr.setString(3, user.getEmail());
-            pr.setString(4, "user");
+            pr.setString(4, user.getRole());
             pr.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    public UserModel findByUnameAndPassword(String uname, String password) {
+    public UserModel findByUnameAndPassword(String uname, String password) throws SQLException {
     Connection connection = DBConnectionConfig.getConnection();
     UserModel user = null;
     try {
@@ -81,10 +81,12 @@ public class UserDAO {
         }
     } catch (SQLException ex) {
         Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Database error during login", ex);
-    }
+    } 
     return user;
 }
 
+    //Admin methods
+    
      public List<UserModel> getAllUsers() {
         Connection connection = DBConnectionConfig.getConnection();
         List<UserModel> users = new ArrayList<>();
@@ -106,24 +108,14 @@ public class UserDAO {
         return users;
      }
      
-//        public List<UserModel> getUserInfo(String uname, String password) {
-//        Connection connection = DBConnectionConfig.getConnection();
-//        List<UserModel> users = new ArrayList<>();
-//        try {
-//            PreparedStatement pr = connection.prepareStatement("SELECT * FROM users WHERE username=? AND password=?)");
-//            ResultSet rs = pr.executeQuery();
-//
-//            while (rs.next()) {
-//                UserModel user = new UserModel();
-//                user.setName(rs.getString("username"));
-//                user.setPassword(rs.getString("password"));
-//                user.setEmail(rs.getString("email"));
-//                user.setRole(rs.getString("role"));
-//                users.add(user);
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Database error during fetching all users", ex);
-//        }
-//        return users;
-//     }
+    public void delete(String username) {
+        Connection connection = DBConnectionConfig.getConnection();
+        try {
+        PreparedStatement pr = connection.prepareStatement("DELETE FROM users WHERE username = ?");
+        pr.setString(1, username);
+            pr.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
